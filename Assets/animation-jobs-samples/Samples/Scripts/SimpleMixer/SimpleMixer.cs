@@ -35,7 +35,7 @@ public class SimpleMixer : MonoBehaviour
         // new一个Native数组, 数组的大小为Animator对应模型的所有GameObject的数量
         m_Handles = new NativeArray<TransformStreamHandle>(numTransforms, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
 
-        // new一个Bone的权重数组, 默认的初始权重值都为1.0f, 其实在这里没啥用, 主要是为了配合AvatarMask的
+        // new一个Bone的权重数组, 默认的初始权重值都为1.0f, 主要是为了配合AvatarMask的, 其实在这里并没有用到
         m_BoneWeights = new NativeArray<float>(numTransforms, Allocator.Persistent, NativeArrayOptions.ClearMemory);
         for (var i = 0; i < numTransforms; ++i)
         {

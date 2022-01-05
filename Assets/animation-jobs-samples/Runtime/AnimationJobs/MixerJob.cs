@@ -22,7 +22,6 @@ public struct MixerJob : IAnimationJob
 
     public void ProcessRootMotion(AnimationStream stream)
     {
-        Debug.Log("ProcessRootMotion");
         AnimationStream streamA = stream.GetInputStream(0);
         AnimationStream streamB = stream.GetInputStream(1);
 
@@ -37,7 +36,6 @@ public struct MixerJob : IAnimationJob
 
     public void ProcessAnimation(AnimationStream stream)
     {
-        Debug.Log("ProcessAnimation");
         AnimationStream streamA = stream.GetInputStream(0);
         AnimationStream streamB = stream.GetInputStream(1);
 
@@ -52,6 +50,8 @@ public struct MixerJob : IAnimationJob
             // 当weight为1时, 全部采用Input 1对应Stream的数据
             var posA = handle.GetLocalPosition(streamA);
             var posB = handle.GetLocalPosition(streamB);
+            // weight * boneWeights[i]: 左边的weight是Clip在Blend时的权重, 右边的boneWeights[i]是
+            // 该Joint Apply AvatarMask的权重(如果没有Apply AvatarMask, 则该值为1.0f)
             handle.SetLocalPosition(stream, Vector3.Lerp(posA, posB, weight * boneWeights[i]));
 
             var rotA = handle.GetLocalRotation(streamA);
