@@ -8,8 +8,10 @@ using UnityEngine.Experimental.Animations;
 
 public struct LookAtJob : IAnimationJob
 {
-    public TransformStreamHandle joint;
-    public TransformSceneHandle target;
+    // 注意, 虽然都是TransformHandle, 这俩类型不一样
+    public TransformStreamHandle joint;         // 要调整的Joint的Transform引用
+    public TransformSceneHandle target;         // IK问题的Goal的Transform引用
+
     public Vector3 axis;
     public float minAngle;
     public float maxAngle;
@@ -23,13 +25,7 @@ public struct LookAtJob : IAnimationJob
         Solve(stream, joint, target, axis, minAngle, maxAngle);
     }
 
-    private static void Solve(
-        AnimationStream stream,
-        TransformStreamHandle joint,
-        TransformSceneHandle target,
-        Vector3 jointAxis,
-        float minAngle,
-        float maxAngle)
+    private static void Solve(AnimationStream stream, TransformStreamHandle joint, TransformSceneHandle target, Vector3 jointAxis, float minAngle, float maxAngle)
     {
         var jointPosition = joint.GetPosition(stream);
         var jointRotation = joint.GetRotation(stream);
