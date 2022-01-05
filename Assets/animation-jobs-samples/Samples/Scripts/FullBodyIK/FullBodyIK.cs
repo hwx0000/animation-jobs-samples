@@ -48,7 +48,7 @@ public class FullBodyIK : MonoBehaviour
 
     private static GameObject CreateEffector(string name)
     {
-        var go = SampleUtility.CreateEffector(name, Vector3.zero, Quaternion.identity);
+        var go = SampleUtility.CreateGoal(name, Vector3.zero, Quaternion.identity);
         return go;
     }
 

@@ -39,7 +39,7 @@ public class LookAt : MonoBehaviour
         var targetPosition = joint.position + gameObject.transform.rotation * Vector3.forward;
 
         // 创建一个GameObject, 作为LookAt过程的Target
-        m_Target = SampleUtility.CreateEffector("Effector_" + joint.name, targetPosition, Quaternion.identity);
+        m_Target = SampleUtility.CreateGoal("Effector_" + joint.name, targetPosition, Quaternion.identity);
 
         // 创建PlayableGraph
         m_Graph = PlayableGraph.Create("TwoBoneIK");

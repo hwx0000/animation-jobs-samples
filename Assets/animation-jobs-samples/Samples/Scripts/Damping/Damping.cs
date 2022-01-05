@@ -82,7 +82,7 @@ public class Damping : MonoBehaviour
         m_JointEffectors = new List<GameObject>(joints.Length);
         foreach (var joint in joints)
         {
-            var effector = SampleUtility.CreateEffector(joint.name, joint.position, joint.rotation);
+            var effector = SampleUtility.CreateGoal(joint.name, joint.position, joint.rotation);
             effector.hideFlags |= HideFlags.HideInHierarchy;
             m_JointEffectors.Add(effector);
         }

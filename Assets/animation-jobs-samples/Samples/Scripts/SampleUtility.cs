@@ -9,23 +9,23 @@ public static class SampleUtility
         return clips.FirstOrDefault(clip => clip.name == clipName);
     }
 
-    public static GameObject CreateEffector(string name, Vector3 position, Quaternion rotation)
+    public static GameObject CreateGoal(string name, Vector3 position, Quaternion rotation)
     {
         var effector = Resources.Load("Effector/Effector", typeof(GameObject)) as GameObject;
-        return CreateEffectorFromGO(name, effector, position, rotation);
+        return CreateGoalFromGO(name, effector, position, rotation);
     }
 
     public static GameObject CreateBodyEffector(string name, Vector3 position, Quaternion rotation)
     {
         var prefab = Resources.Load("Effector/BodyEffector", typeof(GameObject)) as GameObject;
-        var effector = CreateEffectorFromGO(name, prefab, position, rotation);
+        var effector = CreateGoalFromGO(name, prefab, position, rotation);
         effector.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
         return effector;
 
    
     }
 
-    public static GameObject CreateEffectorFromGO(string name, GameObject prefab, Vector3 position, Quaternion rotation)
+    public static GameObject CreateGoalFromGO(string name, GameObject prefab, Vector3 position, Quaternion rotation)
     {
         var effector = Object.Instantiate(prefab);
         effector.name = name;

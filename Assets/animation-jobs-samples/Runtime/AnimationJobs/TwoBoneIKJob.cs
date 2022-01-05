@@ -9,19 +9,20 @@ using UnityEngine.Experimental.Animations;
 
 public struct TwoBoneIKJob : IAnimationJob
 {
-    public TransformSceneHandle effector;
+    public TransformSceneHandle goal;
 
     public TransformStreamHandle top;
     public TransformStreamHandle mid;
-    public TransformStreamHandle low;
+    public TransformStreamHandle effector;
 
-    public void Setup(Animator animator, Transform topX, Transform midX, Transform lowX, Transform effectorX)
+    // 存储三块Joint和Goal的Transform, 以便在ProcessAnimation里对它们进行读写
+    public void Init(Animator animator, Transform topX, Transform midX, Transform lowX, Transform goalX)
     {
         top = animator.BindStreamTransform(topX);
         mid = animator.BindStreamTransform(midX);
-        low = animator.BindStreamTransform(lowX);
+        effector = animator.BindStreamTransform(lowX);
 
-        effector = animator.BindSceneTransform(effectorX);
+        goal = animator.BindSceneTransform(goalX);
     }
 
     public void ProcessRootMotion(AnimationStream stream)
@@ -30,7 +31,7 @@ public struct TwoBoneIKJob : IAnimationJob
 
     public void ProcessAnimation(AnimationStream stream)
     {
-        Solve(stream, top, mid, low, effector);
+        Solve(stream, top, mid, effector, goal);
     }
 
     /// <summary>
@@ -49,24 +50,26 @@ public struct TwoBoneIKJob : IAnimationJob
         return Mathf.Acos(c);
     }
 
-    private static void Solve(AnimationStream stream, TransformStreamHandle topHandle, TransformStreamHandle midHandle, TransformStreamHandle lowHandle, TransformSceneHandle effectorHandle)
+    // 求解这个TwoBoneIK问题
+    private static void Solve(AnimationStream stream, TransformStreamHandle topHandle, TransformStreamHandle midHandle, TransformStreamHandle endHandle, TransformSceneHandle goalHandle)
     {
+        // 只有effector的rotation是肯定不会改变的
         Quaternion aRotation = topHandle.GetRotation(stream);
         Quaternion bRotation = midHandle.GetRotation(stream);
-        Quaternion eRotation = effectorHandle.GetRotation(stream);
+        Quaternion gRotation = goalHandle.GetRotation(stream);
 
         Vector3 aPosition = topHandle.GetPosition(stream);
         Vector3 bPosition = midHandle.GetPosition(stream);
-        Vector3 cPosition = lowHandle.GetPosition(stream);
-        Vector3 ePosition = effectorHandle.GetPosition(stream);
+        Vector3 cPosition = endHandle.GetPosition(stream);
+        Vector3 gPosition = goalHandle.GetPosition(stream);
 
         Vector3 ab = bPosition - aPosition;
         Vector3 bc = cPosition - bPosition;
         Vector3 ac = cPosition - aPosition;
-        Vector3 ae = ePosition - aPosition;
+        Vector3 ag = gPosition - aPosition;
 
         float abcAngle = TriangleAngle(ac.magnitude, ab, bc);
-        float abeAngle = TriangleAngle(ae.magnitude, ab, bc);
+        float abeAngle = TriangleAngle(ag.magnitude, ab, bc);
         float angle = (abcAngle - abeAngle) * Mathf.Rad2Deg;
         Vector3 axis = Vector3.Cross(ab, bc).normalized;
 
@@ -75,11 +78,11 @@ public struct TwoBoneIKJob : IAnimationJob
         Quaternion worldQ = fromToRotation * bRotation;
         midHandle.SetRotation(stream, worldQ);
 
-        cPosition = lowHandle.GetPosition(stream);
+        cPosition = endHandle.GetPosition(stream);
         ac = cPosition - aPosition;
-        Quaternion fromTo = Quaternion.FromToRotation(ac, ae);
+        Quaternion fromTo = Quaternion.FromToRotation(ac, ag);
         topHandle.SetRotation(stream, fromTo * aRotation);
 
-        lowHandle.SetRotation(stream, eRotation);
+        endHandle.SetRotation(stream, gRotation);
     }
 }
