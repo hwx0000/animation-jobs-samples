@@ -55,6 +55,7 @@ public class LookAt : MonoBehaviour
             joint = animator.BindStreamTransform(joint),
             // target是场景中的一个物体, 不受animator控制, 对于animator来说是只读的
             target = animator.BindSceneTransform(m_Target.transform),
+            // 根据不同的轴枚举返回不同的Vector3
             axis = GetAxisVector(axis),
             minAngle = Mathf.Min(minAngle, maxAngle),
             maxAngle = Mathf.Max(minAngle, maxAngle)
@@ -73,6 +74,7 @@ public class LookAt : MonoBehaviour
         Object.Destroy(m_Target);
     }
 
+    // 具体这玩意儿怎么用的, 还得仔细研究研究LookAt这个IK算法
     Vector3 GetAxisVector(Axis axis)
     {
         switch (axis)

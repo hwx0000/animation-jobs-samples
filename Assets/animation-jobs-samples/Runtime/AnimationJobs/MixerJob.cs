@@ -16,6 +16,7 @@ using UnityEngine.Experimental.Animations;
 public struct MixerJob : IAnimationJob
 {
     // 这里的Mixer做的是很具体的东西, 它会把所有的模型上的Joints的Transform根据对应的权重进行混合
+    // 注意, 这种继承于IAnimationJob的类对象, 里面的数组好像都必须用NativeArray才可以
     public NativeArray<TransformStreamHandle> handles;      // 每个Handle对应一个Joint的Transform
     public NativeArray<float> boneWeights;                  
     public float weight;
